@@ -10,5 +10,16 @@
     "nodemon": "^3.1.9",
     "pg": "^8.14.1",
     "prisma": "^6.6.0"
-  }
+  },
+  "name": "foodie_backend",
+  "version": "1.0.0",
+  "main": "app.js",
+  "devDependencies": {},
+  "scripts": {
+    "start": "node app.js"
+    },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
