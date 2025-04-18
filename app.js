@@ -32,7 +32,7 @@ app.get("/users/", async (request, response) => {
   }
 });
 
-app.get("products/" , async (request, response) => {
+app.get("/products/" , async (request, response) => {
   try {
     const result = await pool.query('SELECT * FROM public."Product";'); 
     console.log(result.rows);
