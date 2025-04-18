@@ -23,7 +23,18 @@ const pool = new Pool({
 
 app.get("/users/", async (request, response) => {
   try {
-    const result = await pool.query('SELECT * FROM public."Product" where category=\'Fruits\';'); 
+    const result = await pool.query('SELECT * FROM public."User";'); 
+    console.log(result.rows);
+    response.json(result.rows);
+  } catch (error) {
+    console.error("GET Error:", error);
+    response.status(500).send("Server error");
+  }
+});
+
+app.get("products/" , async (request, response) => {
+  try {
+    const result = await pool.query('SELECT * FROM public."Product";'); 
     console.log(result.rows);
     response.json(result.rows);
   } catch (error) {
@@ -34,6 +45,8 @@ app.get("/users/", async (request, response) => {
 
 app.post("/users/", async (request, response) => {
   const { name, contact, email, password } = request.body;
+
+  console.log(name, contact, email, password);
   
   try {
     // Check if user exists
@@ -53,7 +66,7 @@ app.post("/users/", async (request, response) => {
       [name,contact, email, hashedPassword]
     );
 
-    const result = await pool.query('SELECT * FROM public."user" WHERE email = $1;', [email]);
+    const result = await pool.query('SELECT * FROM public."User" WHERE email = $1;', [email]);
     const usersId = (result.rows[0].id);
 
 
