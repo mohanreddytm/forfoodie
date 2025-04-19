@@ -39,6 +39,22 @@ app.get("/products/" , async (request, response) => {
   }
 });
 
+app.get("/products/:subcategory", async (request, response) => {
+  const { subcategory } = request.params;
+  try {
+    const result = await pool.query(
+      'SELECT * FROM public."Product" WHERE subCategory = $1;',
+      [subcategory]
+    );
+    console.log(result.rows);
+    response.json(result.rows);
+  } catch (error) {
+    console.error("GET Error:", error);
+    response.status(500).send("Server error");
+  }
+}
+)
+
 app.post("/users/", async (request, response) => {
   const { name, contact, email, password } = request.body;
 

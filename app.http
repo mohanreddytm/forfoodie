@@ -1,7 +1,7 @@
 
 ###
 
-GET http://localhost:5050/products/
+GET http://localhost:5050/products/Citrus/
 
 
 
