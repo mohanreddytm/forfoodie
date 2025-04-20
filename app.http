@@ -1,14 +1,25 @@
 
 ###
 
-POST http://localhost:5050/cart
+DELETE http://localhost:5050/cart/
 Content-Type: application/json
 
 {
-    "name":"Tomato",
+    "id":3,
     "userId":7
 }
 
 
 
 ###
+
+
+POST http://localhost:5050/orders/
+Content-Type: application/json
+
+{
+    "userId":7,
+    "price":203,
+    "address": "Mohan nagar",
+    "orderStatus":"Pending"
+}

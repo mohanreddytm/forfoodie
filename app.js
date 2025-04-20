@@ -105,6 +105,40 @@ app.delete("/cart", async (req, res) => {
   }
 });
 
+app.post("/orders", async (req, res) => {
+  const { userId, price, address, orderStatus } = req.body;
+
+  try {
+    const result = await pool.query(
+      `INSERT INTO "Orders" (user_id, price, address, order_status)
+       VALUES ($1, $2, $3, $4) RETURNING *`,
+      [userId, price, address, orderStatus || 'Pending']
+    );
+
+    res.status(201).json({ message: "Order placed", order: result.rows[0] });
+  } catch (error) {
+    console.error("POST /orders Error:", error);
+    res.status(500).send("Server error");
+  }
+});
+
+app.get("/orders/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const result = await pool.query(
+      `SELECT * FROM "Orders" WHERE user_id = $1 ORDER BY id DESC`,
+      [userId]
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("GET /orders/:userId Error:", error);
+    res.status(500).send("Server error");
+  }
+});
+
+
 
 
 app.get("/cart/:userId", async(request, response) => {
