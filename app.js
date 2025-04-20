@@ -213,7 +213,7 @@ app.put("/orders/status", async (req, res) => {
 app.get("/orders/" , async (req , res) => {
   try {
     const result = await pool.query(
-      `SELECT * FROM "Order";`
+      `SELECT * FROM "Order" order by id;`
     );
 
     res.status(200).json(result.rows);
