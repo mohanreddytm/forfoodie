@@ -90,12 +90,12 @@ app.post("/cart/", async (request, response) => {
 
 
 app.delete("/cart", async (req, res) => {
-  const { name, userId } = req.body;
+  const { id, userId } = req.body;
 
   try {
     await pool.query(
-      'DELETE FROM "cart" WHERE name = $1 AND user_id = $2',
-      [name, userId]
+      'DELETE FROM "cart" WHERE id = $1 AND user_id = $2',
+      [id, userId]
     );
 
     res.send("Cart item deleted");
