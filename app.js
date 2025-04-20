@@ -56,11 +56,12 @@ app.get("/products/" , async (request, response) => {
 
 app.get("/products/:category/:subcategory", async (request, response) => {
   const { category, subcategory } = request.params;
+  const decodedSearch = decodeURIComponent(subcategory);
 
   try {
     const result = await pool.query(
       'select * from "Product" where category = $1 and subCategory = $2',
-      [category, subcategory]
+      [category, decodedSearch]
     );
     console.log(result.rows);
     response.json(result.rows);
