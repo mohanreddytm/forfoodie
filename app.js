@@ -123,6 +123,8 @@ app.post("/orders", async (req, res) => {
 });
 
 
+
+
 app.delete("/cart/:userId", async (req, res) => {
   const { userId } = req.params;
 
@@ -152,6 +154,22 @@ app.get("/orders/:userId", async (req, res) => {
     res.status(200).json(result.rows);
   } catch (error) {
     console.error("GET /orders/:userId Error:", error);
+    res.status(500).send("Server error");
+  }
+});
+
+app.delete("/orders", async (req, res) => {
+  const { id, userId } = req.body;
+
+  try {
+    const result = await pool.query(
+      `DELETE FROM "Order" WHERE id = $1 AND user_id = $2`,
+      [id, userId]
+    );
+
+    res.status(200).json("Order has been deleted");
+  } catch (error) {
+    console.error("DELETE /orders Error:", error);
     res.status(500).send("Server error");
   }
 });
