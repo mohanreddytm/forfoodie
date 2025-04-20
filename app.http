@@ -19,7 +19,9 @@ Content-Type: application/json
 
 {
     "userId":7,
-    "price":203,
-    "address": "Mohan nagar",
-    "orderStatus":"Pending"
+    "buyerName": "Mohan",
+    "buyerContact":6303223010,
+    "amount":203,
+    "deliveryAddress": "Mohan nagar",
+    "status":"Pending"
 }

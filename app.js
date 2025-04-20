@@ -106,21 +106,22 @@ app.delete("/cart", async (req, res) => {
 });
 
 app.post("/orders", async (req, res) => {
-  const { userId, price, address, orderStatus } = req.body;
+  const { userId, buyerName, buyerContact, deliveryAddress, amount, status } = req.body;
 
   try {
     const result = await pool.query(
-      `INSERT INTO "Orders" (user_id, price, address, order_status)
-       VALUES ($1, $2, $3, $4) RETURNING *`,
-      [userId, price, address, orderStatus || 'Pending']
+      `INSERT INTO "Order" (user_id, buyer_name, buyer_contact, delivery_address, amount, status)
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [userId, buyerName, buyerContact, deliveryAddress, amount, status]
     );
 
-    res.status(201).json({ message: "Order placed", order: result.rows[0] });
+    res.status(201).json({ message: "Order placed successfully", order: result.rows[0] });
   } catch (error) {
     console.error("POST /orders Error:", error);
-    res.status(500).send("Server error");
+    res.status(500).send("Failed to place order");
   }
 });
+
 
 app.delete("/cart/:userId", async (req, res) => {
   const { userId } = req.params;
@@ -144,7 +145,7 @@ app.get("/orders/:userId", async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT * FROM "Orders" WHERE user_id = $1 ORDER BY id DESC`,
+      `SELECT * FROM "Order" WHERE user_id = $1 ORDER BY id DESC`,
       [userId]
     );
 
@@ -218,7 +219,7 @@ app.post("/users/", async (request, response) => {
     const usersId = (result.rows[0].id);
 
 
-    const payload = {username: email, userId: usersId};
+    const payload = {username: email, userId: usersId, name: name, contact: contact};
     
     const jwtToken = jwt.sign(payload, "MY_SECRET_TOKEN", { expiresIn: "30d" });
     response.json({ jwtToken });
@@ -231,33 +232,35 @@ app.post("/users/", async (request, response) => {
 // User login
 app.post("/login/", async (request, response) => {
   const { email, password } = request.body;
-  
+
   try {
     const result = await pool.query(
       'SELECT * FROM "User" WHERE email = $1;',
       [email]
     );
-    
+
     if (result.rows.length === 0) {
       return response.status(400).send("Invalid user");
     }
 
     const dbUser = result.rows[0];
     const isPasswordValid = await bcrypt.compare(password, dbUser.password);
-    
+
     if (!isPasswordValid) {
       return response.status(400).send("Invalid password");
     }
 
-    const payload = {username: dbUser.email,userId: dbUser.id,};
+    const { id: userId, name, contact } = dbUser;
+    const payload = { username: email, userId, name, contact };
     const jwtToken = jwt.sign(payload, "MY_SECRET_TOKEN", { expiresIn: "30d" });
     response.json({ jwtToken });
-    
+
   } catch (error) {
     console.error("Login Error:", error);
     response.status(500).send("Login failed");
   }
 });
+
 
 
 app.listen(PORT, () => {
