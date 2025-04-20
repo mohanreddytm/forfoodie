@@ -89,6 +89,23 @@ app.post("/cart/", async (request, response) => {
 });
 
 
+app.delete("/cart", async (req, res) => {
+  const { name, userId } = req.body;
+
+  try {
+    await pool.query(
+      'DELETE FROM "cart" WHERE name = $1 AND user_id = $2',
+      [name, userId]
+    );
+
+    res.send("Cart item deleted");
+  } catch (error) {
+    console.error("DELETE Error:", error);
+    res.status(500).send("Server error");
+  }
+});
+
+
 
 app.get("/cart/:userId", async(request, response) => {
   const {userId} = request.params
