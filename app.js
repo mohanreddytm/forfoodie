@@ -55,19 +55,39 @@ app.get("/products/" , async (request, response) => {
 });
 
 app.post("/cart/", async (request, response) => {
-  const {name, price, quantity, userId} = request.body;
-  try {
-    await pool.query(
-      'INSERT INTO "cart" (name,price, quantity, user_id) VALUES ($1, $2, $3, $4);',
-      [name, price, quantity, userId]
-    );
+  const { name, price, quantity, userId } = request.body;
 
-    response.send("Succesfully added to cart");
+  try {
+    // Check if item already exists for the user
+    const checkQuery = 'SELECT quantity FROM "cart" WHERE name = $1 AND user_id = $2';
+    const checkResult = await pool.query(checkQuery, [name, userId]);
+
+    if (checkResult.rows.length > 0) {
+      // Item exists, update the quantity
+      const existingQuantity = checkResult.rows[0].quantity;
+      const newQuantity = existingQuantity + quantity;
+
+      await pool.query(
+        'UPDATE "cart" SET quantity = $1 WHERE name = $2 AND user_id = $3',
+        [newQuantity, name, userId]
+      );
+
+      response.send("Cart quantity updated");
+    } else {
+      // Item doesn't exist, insert it
+      await pool.query(
+        'INSERT INTO "cart" (name, price, quantity, user_id) VALUES ($1, $2, $3, $4)',
+        [name, price, quantity, userId]
+      );
+
+      response.send("Successfully added to cart");
+    }
   } catch (error) {
-    console.error("GET Error:", error);
+    console.error("POST Error:", error);
     response.status(500).send("Server error");
   }
-})
+});
+
 
 
 app.get("/cart/:userId", async(request, response) => {

@@ -1,14 +1,14 @@
 
 ###
 
-POST http://localhost:5050/cart/
+POST http://localhost:5050/cart
 Content-Type: application/json
 
 {
-    "name":"Apple",
-    "price": 10,
-    "quantity": 1,
-    "userId" : 4
+    "name":"Tomato",
+    "price":5,
+    "quantity":10,
+    "userId":7
 }
 
 
