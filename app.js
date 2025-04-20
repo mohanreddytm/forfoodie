@@ -142,6 +142,55 @@ app.delete("/cart/:userId", async (req, res) => {
 });
 
 
+app.delete("/products/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await pool.query(
+      `DELETE FROM "Product" WHERE id = $1`,
+      [id]
+    );
+
+    res.status(200).json({ message: "Product deleted successfully" });
+  } catch (error) {
+    console.error("DELETE /products/:id Error:", error);
+    res.status(500).send("Server error");
+  }
+});
+
+
+app.post("/admin/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const result = await pool.query(
+      `SELECT * FROM "Admin" WHERE email = $1`,
+      [email]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(400).send("Invalid email");
+    }
+
+    const dbAdmin = result.rows[0];
+    const isValid = await bcrypt.compare(password, dbAdmin.password);
+
+    if (!isValid) {
+      return res.status(400).send("Invalid password");
+    }
+
+    const payload = { adminId: dbAdmin.id, email: dbAdmin.email };
+    const jwtToken = jwt.sign(payload, "ADMIN_SECRET", { expiresIn: "30d" });
+
+    res.json({ jwtToken });
+  } catch (error) {
+    console.error("Admin Login Error:", error);
+    res.status(500).send("Server error");
+  }
+});
+
+
+
 app.get("/orders/:userId", async (req, res) => {
   const { userId } = req.params;
 

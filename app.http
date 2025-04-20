@@ -1,11 +1,11 @@
 
 ###
 
-DELETE http://localhost:5050/cart/
+DELETE http://localhost:5050/orders/
 Content-Type: application/json
 
 {
-    "id":3,
+    "id":2,
     "userId":7
 }
 
@@ -13,15 +13,14 @@ Content-Type: application/json
 
 ###
 
+GET http://localhost:5050/orders/7/
 
-POST http://localhost:5050/orders/
+###
+
+POST http://localhost:5050/admin/login/
 Content-Type: application/json
 
 {
-    "userId":7,
-    "buyerName": "Mohan",
-    "buyerContact":6303223010,
-    "amount":203,
-    "deliveryAddress": "Mohan nagar",
-    "status":"Pending"
+    "email":"adminloginone@gmail.com",
+    "password":"admin"
 }
