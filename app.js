@@ -189,6 +189,27 @@ app.post("/admin/login", async (req, res) => {
   }
 });
 
+app.put("/orders/status", async (req, res) => {
+  const { id, status } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE "Order" SET status = $1 WHERE id = $2 RETURNING *`,
+      [status, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    res.status(200).json({ message: "Order status updated", order: result.rows[0] });
+  } catch (error) {
+    console.error("PUT /orders/status Error:", error);
+    res.status(500).send("Server error");
+  }
+});
+
+
 app.get("/orders/" , async (req , res) => {
   try {
     const result = await pool.query(

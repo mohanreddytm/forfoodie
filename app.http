@@ -13,14 +13,14 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:5050/orders/7/
+GET http://localhost:5050/orders/
 
 ###
 
-POST http://localhost:5050/admin/login/
+PUT http://localhost:5050/orders/status/
 Content-Type: application/json
 
 {
-    "email":"adminloginone@gmail.com",
-    "password":"admin"
+    "id":5,
+    "status":"On the Way"
 }
