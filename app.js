@@ -189,6 +189,18 @@ app.post("/admin/login", async (req, res) => {
   }
 });
 
+app.get("/orders/" , async (req , res) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM "Order";`
+    );
+
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("GET /orders/:userId Error:", error);
+    res.status(500).send("Server error");
+  }
+})
 
 
 app.get("/orders/:userId", async (req, res) => {
