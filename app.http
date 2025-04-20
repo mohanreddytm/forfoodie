@@ -1,8 +1,15 @@
 
 ###
 
-GET http://localhost:5050/products/Vegetables/Leafy%20Green/
+POST http://localhost:5050/cart/
+Content-Type: application/json
 
+{
+    "name":"Apple",
+    "price": 10,
+    "quantity": 1,
+    "userId" : 4
+}
 
 
 

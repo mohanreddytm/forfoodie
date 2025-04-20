@@ -54,6 +54,37 @@ app.get("/products/" , async (request, response) => {
   }
 });
 
+app.post("/cart/", async (request, response) => {
+  const {name, price, quantity, userId} = request.body;
+  try {
+    await pool.query(
+      'INSERT INTO "cart" (name,price, quantity, user_id) VALUES ($1, $2, $3, $4);',
+      [name, price, quantity, userId]
+    );
+
+    response.send("Succesfully added to cart");
+  } catch (error) {
+    console.error("GET Error:", error);
+    response.status(500).send("Server error");
+  }
+})
+
+
+app.get("/cart/:userId", async(request, response) => {
+  const {userId} = request.params
+  try {
+    const result = await pool.query(
+      'select * from "cart" where user_id = $1',
+      [userId]
+    );
+    console.log(result.rows);
+    response.json(result.rows);
+  } catch (error) {
+    console.error("GET Error:", error);
+    response.status(500).send("Server error");
+  }
+})
+
 app.get("/products/:category/:subcategory", async (request, response) => {
   const { category, subcategory } = request.params;
   const decodedSearch = decodeURIComponent(subcategory);
