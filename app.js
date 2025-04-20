@@ -28,6 +28,21 @@ app.get("/users/", async (request, response) => {
   }
 });
 
+app.get("/products/:category", async (request, response) => {
+
+  const {category} = request.params;
+  
+
+  try {
+    const result = await pool.query('SELECT * FROM public."Product" where category=$1;', [category]); 
+    console.log(result.rows);
+    response.json(result.rows);
+  } catch (error) {
+    console.error("GET Error:", error);
+    response.status(500).send("Server error");
+  }
+})
+
 app.get("/products/" , async (request, response) => {
   try {
     const result = await pool.query('SELECT * FROM public."Product";'); 
@@ -39,14 +54,13 @@ app.get("/products/" , async (request, response) => {
   }
 });
 
-app.get("/products/:subcategory", async (request, response) => {
-  const { subcategory } = request.params;
-  const decodedSubcategory = decodeURIComponent(subcategory); 
+app.get("/products/:category/:subcategory", async (request, response) => {
+  const { category, subcategory } = request.params;
 
   try {
     const result = await pool.query(
-      'SELECT * FROM public."Product" WHERE subCategory = $1;',
-      [decodedSubcategory]
+      'select * from "Product" where category = $1 and subCategory = $2',
+      [category, subcategory]
     );
     console.log(result.rows);
     response.json(result.rows);
