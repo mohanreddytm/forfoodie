@@ -361,6 +361,9 @@ app.post("/login/", async (request, response) => {
   }
 });
 
+app.get("/ping", (req, res) => {
+  res.send("pong");
+});
 
 
 app.listen(PORT, () => {
